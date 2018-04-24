@@ -8,6 +8,7 @@
 #include <functional>
 #include <fstream>
 #include <thread>
+#include <vector>
 
 
 class TriangleApplication {

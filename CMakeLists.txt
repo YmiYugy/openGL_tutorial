@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 project(openGL_tutorial)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
 
 
@@ -29,4 +29,4 @@ target_include_directories("glad" PRIVATE "${GLAD_DIR}/include")
 target_include_directories(${PROJECT_NAME} PRIVATE "${GLAD_DIR}/include")
 target_link_libraries(${PROJECT_NAME} "glad" "${CMAKE_DL_LIBS}")
 
-set_property(TARGET ${CMAKE_PROJECT_NAME} PROPERTY PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
+#set_property(TARGET ${CMAKE_PROJECT_NAME} PROPERTY PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
