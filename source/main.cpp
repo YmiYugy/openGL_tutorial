@@ -109,7 +109,7 @@ private:
 
         glBindVertexArray(0);
 
-        // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 
     }
@@ -174,12 +174,11 @@ private:
 
     static void window_refresh_callback(GLFWwindow *window) {
         TriangleApplication *app = reinterpret_cast<TriangleApplication *>(glfwGetWindowUserPointer(window));
-        if (!app) {
-            std::cout << "null";
-        } else {
+        if (app) {
             app->draw();
+            glfwSwapBuffers(window);
         }
-        glfwSwapBuffers(window);
+
     }
 
 
