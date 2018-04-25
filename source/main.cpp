@@ -141,7 +141,11 @@ private:
 
         //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-        texture.init({TEX_PATH + "wall.jpg"});
+        texture.init({TEX_PATH + "wall.jpg", TEX_PATH + "grass.jpg"});
+        shaderProgram.use();
+        for(int i = 0; i < texture.texture.size(); i++){
+            shaderProgram.setInt("texture"+(i+1), 1);
+        }
 
     }
 
@@ -173,10 +177,14 @@ private:
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
+        glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture.texture[0]);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, texture.texture[1]);
         shaderProgram.use();
         glBindVertexArray(VAO[0]);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);;
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
 
 
 
