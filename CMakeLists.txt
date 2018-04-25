@@ -7,7 +7,7 @@ set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
 
 set(SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/source")
 set(LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/libraries")
-set(SOURCES "${SRC_DIR}/main.cpp")
+set(SOURCES "${SRC_DIR}/main.cpp" source/shader.cpp source/shader.h)
 
 # Executable definition and properties
 add_executable(${PROJECT_NAME} ${SOURCES})
