@@ -15,6 +15,7 @@
 #include "Texture.h"
 
 
+
 class TriangleApplication {
 public:
     void run() {
@@ -24,6 +25,10 @@ public:
     }
 
 private:
+    const std::string RES_PATH = "../res/";
+    const std::string SHADER_PATH = RES_PATH + "shaders/";
+    const std::string TEX_PATH = RES_PATH + "textures/";
+
     GLFWwindow *window;
     std::vector<float> vertices1 = {
             // positions          // colors           // texture coords
@@ -103,7 +108,7 @@ private:
     }
 
     void initGraphicsPipeline() {
-        shaderProgram.init("../res/shaders/shader.vert", "../res/shaders/shader.frag");
+        shaderProgram.init(SHADER_PATH + "shader.vert", SHADER_PATH + "shader.frag");
         VAO.resize(1);
         VBO.resize(1);
         EBO.resize(1);
@@ -136,7 +141,7 @@ private:
 
         //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-        texture.init("../res/textures/wall.jpg");
+        texture.init({TEX_PATH + "wall.jpg"});
 
     }
 
@@ -168,7 +173,7 @@ private:
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glBindTexture(GL_TEXTURE_2D, texture.texture);
+        glBindTexture(GL_TEXTURE_2D, texture.texture[0]);
         shaderProgram.use();
         glBindVertexArray(VAO[0]);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);;
