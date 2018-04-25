@@ -44,6 +44,8 @@ private:
         1, 2, 3  // second triangle
     };
 
+    float opactiy = 0.5f;
+
     Shader shaderProgram;
     Texture texture;
     std::vector<unsigned int> VAO;
@@ -113,6 +115,7 @@ private:
         VBO.resize(1);
         EBO.resize(1);
 
+
         // init VBO and VAO and EBO
         glGenVertexArrays(VAO.size(), VAO.data());
         glGenBuffers(VBO.size(), VBO.data());
@@ -141,11 +144,14 @@ private:
 
         //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-        texture.init({TEX_PATH + "wall.jpg", TEX_PATH + "grass.jpg"});
-        shaderProgram.use();
+        texture.init({TEX_PATH + "brick.jpg", TEX_PATH + "awesomeface.png"});
+
+        shaderProgram.use(); // don't forget to activate/use the shader before setting uniforms!
         for(int i = 0; i < texture.texture.size(); i++){
-            shaderProgram.setInt("texture"+(i+1), 1);
+            std::string s = "texture" + std::to_string(i+1);
+            shaderProgram.setInt(s, i);
         }
+        shaderProgram.setFloat("opacity", 0.5f);
 
     }
 
@@ -170,6 +176,16 @@ private:
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
             glfwSetWindowShouldClose(window, true);
         }
+        if(glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+            if(opactiy < 1.0f){
+                opactiy  += 0.01f;
+            }
+        }
+        if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS){
+            if(opactiy > 0.0f){
+                opactiy -= 0.01f;
+            }
+        }
     }
 
     void draw() {
@@ -177,16 +193,15 @@ private:
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture.texture[0]);
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, texture.texture[1]);
+        for(int i = 0; i < texture.texture.size(); i++){
+            glActiveTexture(GL_TEXTURE0+i);
+            glBindTexture(GL_TEXTURE_2D, texture.texture[i]);
+
+        }
         shaderProgram.use();
+        shaderProgram.setFloat("opacity", opactiy);
         glBindVertexArray(VAO[0]);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-
-
 
     }
 

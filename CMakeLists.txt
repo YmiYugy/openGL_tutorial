@@ -13,6 +13,7 @@ set(SOURCES "${SRC_DIR}/main.cpp" source/shader.cpp source/shader.h  source/Text
 add_executable(${PROJECT_NAME} ${SOURCES})
 target_include_directories(${PROJECT_NAME} PRIVATE "${SRC_DIR}")
 
+
 set(GLFW_DIR "${LIB_DIR}/glfw")
 set(GLFW_BUILD_EXAMPLES OFF CACHE INTERNAL "Build the GLFW example programs")
 set(GLFW_BUILD_TESTS OFF CACHE INTERNAL "Build the GLFW test programs")
@@ -31,5 +32,7 @@ target_link_libraries(${PROJECT_NAME} "glad" "${CMAKE_DL_LIBS}")
 
 set(STB_DIR "${LIB_DIR}/stb")
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE "${STB_DIR}")
+
+message("all done")
 
 #set_property(TARGET ${CMAKE_PROJECT_NAME} PROPERTY PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
