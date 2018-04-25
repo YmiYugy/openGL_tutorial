@@ -7,7 +7,7 @@ set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
 
 set(SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/source")
 set(LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/libraries")
-set(SOURCES "${SRC_DIR}/main.cpp" source/shader.cpp source/shader.h)
+set(SOURCES "${SRC_DIR}/main.cpp" source/shader.cpp source/shader.h  source/Texture.h)
 
 # Executable definition and properties
 add_executable(${PROJECT_NAME} ${SOURCES})
@@ -28,5 +28,8 @@ add_library("glad" "${GLAD_DIR}/src/glad.c")
 target_include_directories("glad" PRIVATE "${GLAD_DIR}/include")
 target_include_directories(${PROJECT_NAME} PRIVATE "${GLAD_DIR}/include")
 target_link_libraries(${PROJECT_NAME} "glad" "${CMAKE_DL_LIBS}")
+
+set(STB_DIR "${LIB_DIR}/stb")
+target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE "${STB_DIR}")
 
 #set_property(TARGET ${CMAKE_PROJECT_NAME} PROPERTY PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)

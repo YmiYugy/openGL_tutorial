@@ -12,6 +12,7 @@
 #include <sstream>
 
 #include "shader.h"
+#include "Texture.h"
 
 
 class TriangleApplication {
@@ -25,22 +26,24 @@ public:
 private:
     GLFWwindow *window;
     std::vector<float> vertices1 = {
-            // positions         // colors
-            0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  // bottom right
-            -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  // bottom left
-            0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f   // top
+            // positions          // colors           // texture coords
+            0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
+            0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
+            -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
+            -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left
     };
 
-    /*
+
     std::vector<unsigned int> indices = {
-            0, 3, 2,   // first triangle
-            1, 4, 3    // second triangle
+        0, 1, 3, // first triangle
+        1, 2, 3  // second triangle
     };
-     */
+
     Shader shaderProgram;
+    Texture texture;
     std::vector<unsigned int> VAO;
     std::vector<unsigned int> VBO;
-    //std::array<unsigned int, 1> EBO;
+    std::vector<unsigned int> EBO;
 
 
     void init() {
@@ -61,9 +64,9 @@ private:
     }
 
     void cleanup() {
-        glDeleteVertexArrays(2, VAO.data());
-        glDeleteBuffers(2, VBO.data());
-        //glDeleteBuffers(1, &EBO);
+        glDeleteVertexArrays(VAO.size(), VAO.data());
+        glDeleteBuffers(VBO.size(), VBO.data());
+        glDeleteBuffers(EBO.size(), EBO.data());
 
 
         glfwTerminate();
@@ -74,11 +77,11 @@ private:
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-        glfwWindowHint(GLFW_SAMPLES, 8);
+        //glfwWindowHint(GLFW_SAMPLES, 8);
 
         window = glfwCreateWindow(700, 600, "LearnOpenGL", nullptr, nullptr);
 
-        if (window == NULL) {
+        if (window == nullptr) {
             glfwTerminate();
             throw std::runtime_error("failed to create GLFW window\n");
         }
@@ -96,35 +99,44 @@ private:
         glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
         glfwSetWindowRefreshCallback(window, window_refresh_callback);
 
-        glEnable(GL_MULTISAMPLE);
+        //glEnable(GL_MULTISAMPLE);
     }
 
     void initGraphicsPipeline() {
-        shaderProgram.init("../shaders/shader.vert", "../shaders/shader.frag");
+        shaderProgram.init("../res/shaders/shader.vert", "../res/shaders/shader.frag");
         VAO.resize(1);
         VBO.resize(1);
+        EBO.resize(1);
 
         // init VBO and VAO and EBO
         glGenVertexArrays(VAO.size(), VAO.data());
         glGenBuffers(VBO.size(), VBO.data());
-        //glGenBuffers(EBO.size(), EBO.data());
+        glGenBuffers(EBO.size(), EBO.data());
 
         glBindVertexArray(VAO[0]);
 
         glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
         glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertices1.size(), vertices1.data(), GL_STATIC_DRAW);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *) 0);
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO[0]);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * indices.size(), indices.data(), GL_STATIC_DRAW);
+
+
+        // position attribute
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(0);
-
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*) (3* sizeof(float)));
+        // color attribute
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
         glEnableVertexAttribArray(1);
+        // texture coord attribute
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+        glEnableVertexAttribArray(2);
 
-        //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-        //glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * indices.size(), indices.data(), GL_STATIC_DRAW);
 
 
         //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+        texture.init("../res/textures/wall.jpg");
 
     }
 
@@ -156,10 +168,10 @@ private:
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glBindVertexArray(VAO[0]);
+        glBindTexture(GL_TEXTURE_2D, texture.texture);
         shaderProgram.use();
-        shaderProgram.setFloat("offset", 0.0f);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glBindVertexArray(VAO[0]);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);;
 
 
 
